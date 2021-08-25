@@ -1,6 +1,8 @@
+// TODO: use MuiStyles to change styles of the TextField
+
 import React from "react";
-// import Script from "react-load-script";
-import { ZoomMainContainer, ZoomInnerContainer, ZoomH1Title, ZoomJoinButton } from "./Zoom.styles";
+import { ZoomMainContainer, ZoomInnerContainer, ZoomContentContainer, ZoomH1Title, ZoomH3Title, ZoomJoinButton } from "./Zoom.styles";
+import { TextField } from "@material-ui/core";
 
 declare var ZoomMtg;
 
@@ -41,6 +43,7 @@ const Zoom = () => {
     })
       .then((res) => res.json())
       .then((response) => {
+        // KEY: start meeting
         startMeeting(response.signature);
       })
       .catch((error) => {
@@ -82,9 +85,15 @@ const Zoom = () => {
     <ZoomMainContainer id="zoom-main-container">
       {/* <Script url="https://webgazer.cs.brown.edu/webgazer.js" onLoad={handleScriptLoad} onError={handleScriptError} /> */}
       <ZoomInnerContainer>
-        <ZoomH1Title>Zoom React App</ZoomH1Title>
-        <ZoomJoinButton onClick={getSignature}>Join Meeting</ZoomJoinButton>
-        {/* <ZoomJoinButton onClick={joinButtonClicked}>Join Meeting</ZoomJoinButton> */}
+        <ZoomContentContainer>
+          <ZoomH1Title>Welcome to Aankh Zoom Analytics</ZoomH1Title>
+          <ZoomH3Title>Please fill out the following meeting information and your desired name and email</ZoomH3Title>
+          <TextField id="outlined-basic" label="meeting number" variant="outlined" />
+          <TextField id="outlined-basic" label="meeting password" variant="outlined" />
+          <TextField id="outlined-basic" label="your name" variant="outlined" />
+          <TextField id="outlined-basic" label="your email" variant="outlined" />
+          <ZoomJoinButton onClick={getSignature}>Join Meeting</ZoomJoinButton>
+        </ZoomContentContainer>
       </ZoomInnerContainer>
     </ZoomMainContainer>
   );

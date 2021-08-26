@@ -1,5 +1,9 @@
+/* TODO: Board */
+// Meeting Language
+
 import React, { useState } from "react";
 import { ZoomMainContainer, ZoomInnerContainer, ZoomContentContainer, ZoomH1Title, ZoomH3Title, ZoomInputForm, ZoomeTextFieldBox, ZoomTextField, ZoomJoinButton } from "./Zoom.styles";
+import { zoomConfig } from "./zoomGlobalVars";
 
 declare var ZoomMtg;
 
@@ -17,35 +21,16 @@ const Zoom = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // load zoom support language  ['de-DE', 'es-ES', 'en-US', 'fr-FR', 'jp-JP', 'pt-PT','ru-RU', 'zh-CN', 'zh-TW', 'ko-KO', 'it-IT', 'vi-VN']
   const [meetingLang, setMeetingLang] = useState(""); // TODO: allow change language
 
-  // setup your signature endpoint here: https://github.com/zoom/websdk-sample-signature-node.js
-  /* Zoom Configurations */
-  var signatureEndpoint = "http://localhost:4000/";
-  var apiKey = "PqT9I5o7Q--GqvZXDOMl9w";
-  var role = 0;
-  var leaveUrl = "http://localhost:3000"; // use the proxied address in the server
-
-  // var meetingNumber = "2225825225"; // timo
-  // var userName = "Timo";
-  // var userEmail = "test@gmail.com";
-  // var passWord = "QM0zd8";
-  // var language = "en-US";
-
-  // pass in the registrant's token if your meeting or webinar requires registration. More info here:
-  // Meetings: https://marketplace.zoom.us/docs/sdk/native-sdks/web/build/meetings/join#join-registered
-  // Webinars: https://marketplace.zoom.us/docs/sdk/native-sdks/web/build/webinars/join#join-registered-webinar
-  var registrantToken = "";
-
-  const getSignature = (e) => {
-    e.preventDefault();
-
-    fetch(signatureEndpoint, {
+  const getSignature = () => {
+    fetch(zoomConfig.signatureEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         meetingNumber: meetingNumber,
-        role: role,
+        role: zoomConfig.role,
       }),
     })
       .then((res) => res.json())
@@ -62,7 +47,7 @@ const Zoom = () => {
     document.getElementById("zmmtg-root").style.display = "block";
 
     ZoomMtg.init({
-      leaveUrl: leaveUrl,
+      leaveUrl: zoomConfig.leaveUrl,
       success: (success) => {
         console.log(success);
 
@@ -70,10 +55,10 @@ const Zoom = () => {
           signature: signature,
           meetingNumber: meetingNumber,
           userName: name,
-          apiKey: apiKey,
+          apiKey: zoomConfig.apiKey,
           userEmail: email,
           passWord: password,
-          tk: registrantToken,
+          tk: zoomConfig.registrantToken,
           success: (success) => {
             console.log(success);
           },
@@ -88,8 +73,31 @@ const Zoom = () => {
     });
   };
 
+  const updateInputVal = (event) => {
+    const curInputVal = event.target.value;
+    console.log(curInputVal);
+    switch (event.target.id) {
+      case "mn-input":
+        setMeetingNumber(curInputVal);
+        console.log("in [mn-input]");
+        break;
+      case "pw-input":
+        setPassword(curInputVal);
+        console.log("in [pw-input]");
+        break;
+      case "name-input":
+        setName(curInputVal);
+        console.log("in [name-input]");
+        break;
+      case "email-input":
+        setEmail(curInputVal);
+        console.log("in [email-input]");
+        break;
+    }
+  };
+
   const onJoinBtnClicked = () => {
-    const meetingNum = document.getE;
+    getSignature();
   };
 
   return (
@@ -102,16 +110,16 @@ const Zoom = () => {
 
           <ZoomInputForm>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="mn-input" placeholder="meeting number" />
+              <ZoomTextField id="mn-input" placeholder="meeting number" onChange={updateInputVal} />
             </ZoomeTextFieldBox>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="pw-input" placeholder="meeting password" />
+              <ZoomTextField id="pw-input" placeholder="meeting password" onChange={updateInputVal} />
             </ZoomeTextFieldBox>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="name-input" placeholder="your name" />
+              <ZoomTextField id="name-input" placeholder="your name" onChange={updateInputVal} />
             </ZoomeTextFieldBox>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="email-input" placeholder="your email" />
+              <ZoomTextField id="email-input" placeholder="your email" onChange={updateInputVal} />
             </ZoomeTextFieldBox>
             {/* <ZoomJoinButton onClick={getSignature}>Join Meeting</ZoomJoinButton> */}
             <ZoomJoinButton onClick={onJoinBtnClicked}>Join Meeting</ZoomJoinButton>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { makeStyles } from "@material-ui/core/styles";
 
 // TODO:
 /* user */
@@ -15,7 +16,7 @@ export const ZoomMainContainer = styled.div`
 export const ZoomInnerContainer = styled.div`
   height: 100vh;
   width: 100vw;
-  overflow: scroll;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,15 +33,46 @@ export const ZoomContentContainer = styled.div`
 
   // TODO: need mediaQuery or min-height / min-width
 
-  background-color: orange;
+  /* background-color: orange; */
 `;
 
 export const ZoomH1Title = styled.h1`
+  text-align: center;
   color: white;
 `;
 
 export const ZoomH3Title = styled.h3`
+  text-align: center;
   color: white;
+`;
+
+export const ZoomInputForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ZoomeTextFieldBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 20px;
+  padding: 15px 10px;
+  margin: 20px 0px;
+`;
+
+export const ZoomTextField = styled.input`
+  line-height: 10px;
+  background-color: transparent;
+  border: 0px;
+  color: white;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 4px 2px -4px gray;
+  }
 `;
 
 export const ZoomJoinButton = styled.div`

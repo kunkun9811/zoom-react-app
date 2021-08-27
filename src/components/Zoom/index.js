@@ -16,6 +16,7 @@ ZoomMtg.i18n.load("en-US");
 ZoomMtg.i18n.reload("en-US");
 
 const Zoom = () => {
+  // TODO: change these to "useRef" so that it doesn't cause re-render each time user types something
   /* states */
   const [meetingNumber, setMeetingNumber] = useState("");
   const [name, setName] = useState("");

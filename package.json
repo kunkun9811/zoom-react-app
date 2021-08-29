@@ -2,7 +2,7 @@
   "name": "zoom-react-app",
   "version": "1.0.0",
   "author": "Timo Chen",
-  "homepage": "",
+  "homepage": "http://www.zoomdemo.aankh.co/frontend",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",

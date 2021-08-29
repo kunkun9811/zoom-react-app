@@ -5,6 +5,9 @@ import React, { useState } from "react";
 import { ZoomMainContainer, ZoomInnerContainer, ZoomContentContainer, ZoomH1Title, ZoomH3Title, ZoomInputForm, ZoomeTextFieldBox, ZoomTextField, ZoomJoinButton } from "./Zoom.styles";
 import { zoomConfig } from "./zoomGlobalVars";
 
+// utils
+import { sendDataToParent } from "../../utils/sendDataToParent";
+
 declare var ZoomMtg;
 
 ZoomMtg.setZoomJSLib("https://source.zoom.us/1.9.7/lib", "/av");
@@ -38,6 +41,8 @@ const Zoom = () => {
       .then((response) => {
         // KEY: start meeting
         startMeeting(response.signature);
+        // KEY: send meeting number to parent site or container
+        sendDataToParent(meetingNumber);
       })
       .catch((error) => {
         console.error(error);
@@ -76,23 +81,18 @@ const Zoom = () => {
 
   const updateInputVal = (event) => {
     const curInputVal = event.target.value;
-    console.log(curInputVal);
     switch (event.target.id) {
       case "mn-input":
         setMeetingNumber(curInputVal);
-        console.log("in [mn-input]");
         break;
       case "pw-input":
         setPassword(curInputVal);
-        console.log("in [pw-input]");
         break;
       case "name-input":
         setName(curInputVal);
-        console.log("in [name-input]");
         break;
       case "email-input":
         setEmail(curInputVal);
-        console.log("in [email-input]");
         break;
     }
   };

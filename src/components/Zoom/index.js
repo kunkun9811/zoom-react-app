@@ -4,6 +4,8 @@
 import React, { useState } from "react";
 import { ZoomMainContainer, ZoomInnerContainer, ZoomContentContainer, ZoomH1Title, ZoomH3Title, ZoomInputForm, ZoomeTextFieldBox, ZoomTextField, ZoomJoinButton } from "./Zoom.styles";
 import { zoomConfig } from "./zoomGlobalVars";
+import { Select, MenuItem, FormControl, InputLabel, makeStyles } from "@material-ui/core";
+import { dataTypeToParentDOM, userRoleType } from "../../GlobalVars";
 
 // utils
 import { sendDataToParent } from "../../utils/sendDataToParent";
@@ -18,16 +20,51 @@ ZoomMtg.prepareWebSDK();
 ZoomMtg.i18n.load("en-US");
 ZoomMtg.i18n.reload("en-US");
 
+/* KEY: MUI styles */
+const useStyles = makeStyles({
+  formControl: {
+    minWidth: 200,
+  },
+  inputLabel: {
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    color: "white",
+  },
+  select: {
+    "&:before": {
+      borderColor: "white",
+    },
+    "&:after": {
+      borderColor: "white",
+    },
+    "&:not(.Mui-disabled):hover::before": {
+      borderColor: "white",
+    },
+    marginBottom: "40px",
+  },
+  icon: {
+    fill: "white",
+  },
+  root: {
+    color: "white",
+  },
+});
+
 const Zoom = () => {
+  /* MUI styles */
+  const classes = useStyles();
+
   // TODO: change these to "useRef" so that it doesn't cause re-render each time user types something
   /* states */
   const [meetingNumber, setMeetingNumber] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userRole, setUserRole] = useState(0); // 0 = student, 1 = host/instructor
   // load zoom support language  ['de-DE', 'es-ES', 'en-US', 'fr-FR', 'jp-JP', 'pt-PT','ru-RU', 'zh-CN', 'zh-TW', 'ko-KO', 'it-IT', 'vi-VN']
   const [meetingLang, setMeetingLang] = useState(""); // TODO: allow change language
 
+  /* methods */
   const getSignature = () => {
     fetch(zoomConfig.signatureEndpoint, {
       method: "POST",
@@ -42,7 +79,9 @@ const Zoom = () => {
         // KEY: start meeting
         startMeeting(response.signature);
         // KEY: send meeting number to parent site or container
-        sendDataToParent(meetingNumber);
+        sendDataToParent(meetingNumber, dataTypeToParentDOM.TYPE_MEETING_NUMBER);
+        // KEY: send user selected role to parent site or container
+        sendDataToParent(userRole, dataTypeToParentDOM.TYPE_USER_ROLE);
       })
       .catch((error) => {
         console.error(error);
@@ -97,6 +136,10 @@ const Zoom = () => {
     }
   };
 
+  const handleRoleSelected = (e) => {
+    setUserRole(e.target.value);
+  };
+
   const onJoinBtnClicked = () => {
     getSignature();
   };
@@ -122,7 +165,30 @@ const Zoom = () => {
             <ZoomeTextFieldBox>
               <ZoomTextField id="email-input" placeholder="your email" onChange={updateInputVal} />
             </ZoomeTextFieldBox>
-            {/* <ZoomJoinButton onClick={getSignature}>Join Meeting</ZoomJoinButton> */}
+            {/* KEY: user role selection. [8/30/2021 - TODO: figure out if it's possible to validate using Zoom API] */}
+            <FormControl className={classes.formControl}>
+              <InputLabel className={classes.inputLabel}>What is your role?</InputLabel>
+              {/* NOTE: for camera selection */}
+
+              <Select
+                className={classes.select}
+                inputProps={{
+                  classes: {
+                    icon: classes.icon,
+                    root: classes.root,
+                  },
+                }}
+                onChange={handleRoleSelected}
+              >
+                <MenuItem key={userRoleType.STUDENT} value={userRoleType.STUDENT}>
+                  Student
+                </MenuItem>
+                <MenuItem key={userRoleType.INSTRUCTOR} value={userRoleType.INSTRUCTOR}>
+                  Instructor
+                </MenuItem>
+              </Select>
+            </FormControl>
+
             <ZoomJoinButton onClick={onJoinBtnClicked}>Join Meeting</ZoomJoinButton>
           </ZoomInputForm>
         </ZoomContentContainer>

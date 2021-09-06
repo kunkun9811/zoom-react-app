@@ -62,7 +62,7 @@ const Zoom = () => {
   const [password, setPassword] = useState("");
   const [userRole, setUserRole] = useState(0); // 0 = student, 1 = host/instructor
   // load zoom support language  ['de-DE', 'es-ES', 'en-US', 'fr-FR', 'jp-JP', 'pt-PT','ru-RU', 'zh-CN', 'zh-TW', 'ko-KO', 'it-IT', 'vi-VN']
-  const [meetingLang, setMeetingLang] = useState(""); // TODO: allow change language
+  // const [meetingLang, setMeetingLang] = useState(""); // TODO: allow change language
 
   /* methods */
   const getSignature = () => {
@@ -132,6 +132,8 @@ const Zoom = () => {
         break;
       case "email-input":
         setEmail(curInputVal);
+        break;
+      default:
         break;
     }
   };

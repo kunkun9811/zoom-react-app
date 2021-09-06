@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core/styles";
 
 // TODO:
 /* user */
-var meetingNumber = "2225825225"; // required
-var userName = "Timo"; // required
-var userEmail = "test@gmail.com";
-var passWord = "QM0zd8"; // MIGHT be required
-var language = "en-US"; // good to have
+// var meetingNumber = "2225825225"; // required
+// var userName = "Timo"; // required
+// var userEmail = "test@gmail.com";
+// var passWord = "QM0zd8"; // MIGHT be required
+// var language = "en-US"; // good to have
 
 export const ZoomMainContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.9);

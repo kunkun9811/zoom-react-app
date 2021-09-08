@@ -126,15 +126,15 @@ const Zoom = () => {
   // check if all necessary inputs are received
   const checkReceivedAllUserInputs = () => {
     const receivedMeetingNumber = meetingNumber.length > 0 ? true : false;
-    const receivedpassword = password.length > 0 ? true : false;
+    // const receivedpassword = password.length > 0 ? true : false;
     const receivedUserName = name.length > 0 ? true : false;
-    const receivedUserEmail = email.length > 0 ? true : false;
+    // const receivedUserEmail = email.length > 0 ? true : false;
 
     if (
       receivedMeetingNumber && // check if received all necessary input
-      receivedpassword &&
-      receivedUserName &&
-      receivedUserEmail
+      // receivedpassword &&
+      receivedUserName
+      // receivedUserEmail
     ) {
       return true;
     }

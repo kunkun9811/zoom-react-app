@@ -148,7 +148,53 @@ const Zoom = () => {
 
   return (
     <ZoomMainContainer id="zoom-main-container">
-      {/* <Script url="https://webgazer.cs.brown.edu/webgazer.js" onLoad={handleScriptLoad} onError={handleScriptError} /> */}
+      <ZoomInnerContainer>
+        <ZoomContentContainer>
+          <ZoomH1Title>Welcome to Aankh Zoom Analytics</ZoomH1Title>
+          <ZoomH3Title>Please fill out the following meeting information and your desired name and email</ZoomH3Title>
+
+          <ZoomInputForm>
+            <ZoomeTextFieldBox>
+              <ZoomTextField id="mn-input" placeholder="meeting number" onChange={updateInputVal} />
+            </ZoomeTextFieldBox>
+            <ZoomeTextFieldBox>
+              <ZoomTextField id="pw-input" placeholder="meeting password" onChange={updateInputVal} />
+            </ZoomeTextFieldBox>
+            <ZoomeTextFieldBox>
+              <ZoomTextField id="name-input" placeholder="your name" onChange={updateInputVal} />
+            </ZoomeTextFieldBox>
+            <ZoomeTextFieldBox>
+              <ZoomTextField id="email-input" placeholder="your email" onChange={updateInputVal} />
+            </ZoomeTextFieldBox>
+            {/* KEY: user role selection. [8/30/2021 - TODO: figure out if it's possible to validate using Zoom API] */}
+            <FormControl className={classes.formControl}>
+              <InputLabel className={classes.inputLabel}>What is your role?</InputLabel>
+              {/* NOTE: for camera selection */}
+
+              <Select
+                className={classes.select}
+                inputProps={{
+                  classes: {
+                    icon: classes.icon,
+                    root: classes.root,
+                  },
+                }}
+                onChange={handleRoleSelected}
+              >
+                <MenuItem key={userRoleType.STUDENT} value={userRoleType.STUDENT}>
+                  Student
+                </MenuItem>
+                <MenuItem key={userRoleType.INSTRUCTOR} value={userRoleType.INSTRUCTOR}>
+                  Instructor
+                </MenuItem>
+              </Select>
+            </FormControl>
+
+            <ZoomJoinButton onClick={onJoinBtnClicked}>Join Meeting</ZoomJoinButton>
+          </ZoomInputForm>
+        </ZoomContentContainer>
+      </ZoomInnerContainer>
+
       <ZoomInnerContainer>
         <ZoomContentContainer>
           <ZoomH1Title>Welcome to Aankh Zoom Analytics</ZoomH1Title>

@@ -15,7 +15,7 @@ export const ZoomMainContainer = styled.div`
 export const ZoomInnerContainer = styled.div`
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
+  overflow: scroll;
   display: flex;
   flex-direction: column;
   justify-content: center;

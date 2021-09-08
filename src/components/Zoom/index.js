@@ -2,9 +2,25 @@
 // Meeting Language
 
 import React, { useState } from "react";
-import { ZoomMainContainer, ZoomInnerContainer, ZoomContentContainer, ZoomH1Title, ZoomH3Title, ZoomInputForm, ZoomeTextFieldBox, ZoomTextField, ZoomJoinButton } from "./Zoom.styles";
+import {
+  ZoomMainContainer,
+  ZoomInnerContainer,
+  ZoomContentContainer,
+  ZoomH1Title,
+  ZoomH3Title,
+  ZoomInputForm,
+  ZoomeTextFieldBox,
+  ZoomTextField,
+  ZoomJoinButton,
+} from "./Zoom.styles";
 import { zoomConfig } from "./zoomGlobalVars";
-import { Select, MenuItem, FormControl, InputLabel, makeStyles } from "@material-ui/core";
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  makeStyles,
+} from "@material-ui/core";
 import { dataTypeToParentDOM, userRoleType } from "../../GlobalVars";
 
 // utils
@@ -79,7 +95,10 @@ const Zoom = () => {
         // KEY: start meeting
         startMeeting(response.signature);
         // KEY: send meeting number to parent site or container
-        sendDataToParent(meetingNumber, dataTypeToParentDOM.TYPE_MEETING_NUMBER);
+        sendDataToParent(
+          meetingNumber,
+          dataTypeToParentDOM.TYPE_MEETING_NUMBER
+        );
         // KEY: send user selected role to parent site or container
         sendDataToParent(userRole, dataTypeToParentDOM.TYPE_USER_ROLE);
       })
@@ -118,6 +137,7 @@ const Zoom = () => {
     });
   };
 
+  // KEY: NOTE: NEED THIS
   const updateInputVal = (event) => {
     const curInputVal = event.target.value;
     switch (event.target.id) {
@@ -151,24 +171,45 @@ const Zoom = () => {
       <ZoomInnerContainer>
         <ZoomContentContainer>
           <ZoomH1Title>Welcome to Aankh Zoom Analytics</ZoomH1Title>
-          <ZoomH3Title>Please fill out the following meeting information and your desired name and email</ZoomH3Title>
+          <ZoomH3Title>
+            Please fill out the following meeting information and your desired
+            name and email
+          </ZoomH3Title>
 
           <ZoomInputForm>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="mn-input" placeholder="meeting number" onChange={updateInputVal} />
+              <ZoomTextField
+                id="mn-input"
+                placeholder="meeting number"
+                onChange={updateInputVal}
+              />
             </ZoomeTextFieldBox>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="pw-input" placeholder="meeting password" onChange={updateInputVal} />
+              <ZoomTextField
+                id="pw-input"
+                placeholder="meeting password"
+                onChange={updateInputVal}
+              />
             </ZoomeTextFieldBox>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="name-input" placeholder="your name" onChange={updateInputVal} />
+              <ZoomTextField
+                id="name-input"
+                placeholder="your name"
+                onChange={updateInputVal}
+              />
             </ZoomeTextFieldBox>
             <ZoomeTextFieldBox>
-              <ZoomTextField id="email-input" placeholder="your email" onChange={updateInputVal} />
+              <ZoomTextField
+                id="email-input"
+                placeholder="your email"
+                onChange={updateInputVal}
+              />
             </ZoomeTextFieldBox>
             {/* KEY: user role selection. [8/30/2021 - TODO: figure out if it's possible to validate using Zoom API] */}
             <FormControl className={classes.formControl}>
-              <InputLabel className={classes.inputLabel}>What is your role?</InputLabel>
+              <InputLabel className={classes.inputLabel}>
+                What is your role?
+              </InputLabel>
               {/* NOTE: for camera selection */}
 
               <Select
@@ -181,63 +222,24 @@ const Zoom = () => {
                 }}
                 onChange={handleRoleSelected}
               >
-                <MenuItem key={userRoleType.STUDENT} value={userRoleType.STUDENT}>
+                <MenuItem
+                  key={userRoleType.STUDENT}
+                  value={userRoleType.STUDENT}
+                >
                   Student
                 </MenuItem>
-                <MenuItem key={userRoleType.INSTRUCTOR} value={userRoleType.INSTRUCTOR}>
+                <MenuItem
+                  key={userRoleType.INSTRUCTOR}
+                  value={userRoleType.INSTRUCTOR}
+                >
                   Instructor
                 </MenuItem>
               </Select>
             </FormControl>
 
-            <ZoomJoinButton onClick={onJoinBtnClicked}>Join Meeting</ZoomJoinButton>
-          </ZoomInputForm>
-        </ZoomContentContainer>
-      </ZoomInnerContainer>
-
-      <ZoomInnerContainer>
-        <ZoomContentContainer>
-          <ZoomH1Title>Welcome to Aankh Zoom Analytics</ZoomH1Title>
-          <ZoomH3Title>Please fill out the following meeting information and your desired name and email</ZoomH3Title>
-
-          <ZoomInputForm>
-            <ZoomeTextFieldBox>
-              <ZoomTextField id="mn-input" placeholder="meeting number" onChange={updateInputVal} />
-            </ZoomeTextFieldBox>
-            <ZoomeTextFieldBox>
-              <ZoomTextField id="pw-input" placeholder="meeting password" onChange={updateInputVal} />
-            </ZoomeTextFieldBox>
-            <ZoomeTextFieldBox>
-              <ZoomTextField id="name-input" placeholder="your name" onChange={updateInputVal} />
-            </ZoomeTextFieldBox>
-            <ZoomeTextFieldBox>
-              <ZoomTextField id="email-input" placeholder="your email" onChange={updateInputVal} />
-            </ZoomeTextFieldBox>
-            {/* KEY: user role selection. [8/30/2021 - TODO: figure out if it's possible to validate using Zoom API] */}
-            <FormControl className={classes.formControl}>
-              <InputLabel className={classes.inputLabel}>What is your role?</InputLabel>
-              {/* NOTE: for camera selection */}
-
-              <Select
-                className={classes.select}
-                inputProps={{
-                  classes: {
-                    icon: classes.icon,
-                    root: classes.root,
-                  },
-                }}
-                onChange={handleRoleSelected}
-              >
-                <MenuItem key={userRoleType.STUDENT} value={userRoleType.STUDENT}>
-                  Student
-                </MenuItem>
-                <MenuItem key={userRoleType.INSTRUCTOR} value={userRoleType.INSTRUCTOR}>
-                  Instructor
-                </MenuItem>
-              </Select>
-            </FormControl>
-
-            <ZoomJoinButton onClick={onJoinBtnClicked}>Join Meeting</ZoomJoinButton>
+            <ZoomJoinButton onClick={onJoinBtnClicked}>
+              Join Meeting
+            </ZoomJoinButton>
           </ZoomInputForm>
         </ZoomContentContainer>
       </ZoomInnerContainer>

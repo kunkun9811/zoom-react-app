@@ -1,5 +1,5 @@
 /*** variables for Zoom Config in ZoomGlobalVars.js ***/
-const DEV_LEAVE_URL = "https://localhost:3001";
+const DEV_LEAVE_URL = "http://localhost:3001/overlay";
 const PROD_LEAVE_URL = "https://www.zoomdemo.aankh.co/overlay";
 export const ZOOM_LEAVE_URL =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"

@@ -1,86 +1,41 @@
 /* TODO: Board */
 // Meeting Language
 
-import React, { useState } from "react";
-import {
-  ZoomMainContainer,
-  ZoomInnerContainer,
-  ZoomContentContainer,
-  ZoomH1Title,
-  ZoomH3Title,
-  ZoomInputForm,
-  ZoomeTextFieldBox,
-  ZoomTextField,
-  ZoomJoinButton,
-} from "./Zoom.styles";
+import React, { useState, useEffect } from "react";
 import { zoomConfig } from "./zoomGlobalVars";
 import {
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  makeStyles,
-} from "@material-ui/core";
-import { dataTypeToParentDOM, userRoleType } from "../../GlobalVars";
+  dataTypeToParentDOM,
+  dataTypeReceiveFromParentDOM,
+  userRoleType,
+} from "../../GlobalVars";
 
 // utils
 import { sendDataToParent } from "../../utils/sendDataToParent";
+import ReceiveDataFromParent from "../../utils/ReceiveDataFromParent";
 
 declare var ZoomMtg;
 
 ZoomMtg.setZoomJSLib("https://source.zoom.us/1.9.7/lib", "/av");
 
 ZoomMtg.preLoadWasm();
-ZoomMtg.prepareWebSDK();
+ZoomMtg.prepareWebSDK(); // NOTE: this insert necessary scripts and elements including <div id="zmmtg-root">
 // loads language files, also passes any error messages to the ui
 ZoomMtg.i18n.load("en-US");
 ZoomMtg.i18n.reload("en-US");
 
-/* KEY: MUI styles */
-const useStyles = makeStyles({
-  formControl: {
-    minWidth: 200,
-  },
-  inputLabel: {
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    color: "white",
-  },
-  select: {
-    "&:before": {
-      borderColor: "white",
-    },
-    "&:after": {
-      borderColor: "white",
-    },
-    "&:not(.Mui-disabled):hover::before": {
-      borderColor: "white",
-    },
-    marginBottom: "40px",
-  },
-  icon: {
-    fill: "white",
-  },
-  root: {
-    color: "white",
-  },
-});
-
 const Zoom = () => {
-  /* MUI styles */
-  const classes = useStyles();
-
-  // TODO: change these to "useRef" so that it doesn't cause re-render each time user types something
-  /* states */
+  /*** states ***/
   const [meetingNumber, setMeetingNumber] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userRole, setUserRole] = useState(0); // 0 = student, 1 = host/instructor
+
   // load zoom support language  ['de-DE', 'es-ES', 'en-US', 'fr-FR', 'jp-JP', 'pt-PT','ru-RU', 'zh-CN', 'zh-TW', 'ko-KO', 'it-IT', 'vi-VN']
   // const [meetingLang, setMeetingLang] = useState(""); // TODO: allow change language
 
-  /* methods */
+  /*** methods ***/
+  // KEY: get signature to launch zoom meeting on success
   const getSignature = () => {
     fetch(zoomConfig.signatureEndpoint, {
       method: "POST",
@@ -94,19 +49,20 @@ const Zoom = () => {
       .then((response) => {
         // KEY: start meeting
         startMeeting(response.signature);
-        // KEY: send meeting number to parent site or container
-        sendDataToParent(
-          meetingNumber,
-          dataTypeToParentDOM.TYPE_MEETING_NUMBER
-        );
+        // TODO: to be deleted KEY: send meeting number to parent site or container
+        // sendDataToParent(
+        //   meetingNumber,
+        //   dataTypeToParentDOM.TYPE_MEETING_NUMBER
+        // );
         // KEY: send user selected role to parent site or container
-        sendDataToParent(userRole, dataTypeToParentDOM.TYPE_USER_ROLE);
+        // sendDataToParent(userRole, dataTypeToParentDOM.TYPE_USER_ROLE);
       })
       .catch((error) => {
         console.error(error);
       });
   };
 
+  // KEY: signal zoom library to start meeting
   const startMeeting = (signature) => {
     document.getElementById("zmmtg-root").style.display = "block";
 
@@ -137,113 +93,66 @@ const Zoom = () => {
     });
   };
 
-  // KEY: NOTE: NEED THIS
-  const updateInputVal = (event) => {
-    const curInputVal = event.target.value;
-    switch (event.target.id) {
-      case "mn-input":
-        setMeetingNumber(curInputVal);
+  // NOTE: function used to update state variable in current component
+  const updateInputFields = (messageType, data) => {
+    switch (messageType) {
+      case dataTypeReceiveFromParentDOM.TYPE_MEETING_NUMBER:
+        console.log("=====[MEETING NUMBER RECEIVED]");
+        console.log(`meeting number = ${data}`);
+        setMeetingNumber(data);
         break;
-      case "pw-input":
-        setPassword(curInputVal);
+      case dataTypeReceiveFromParentDOM.TYPE_MEETING_PASSWORD:
+        console.log("=====[MEETING PASSWORD RECEIVED]");
+        console.log(`meeting password = ${data}`);
+        setPassword(data);
         break;
-      case "name-input":
-        setName(curInputVal);
+      case dataTypeReceiveFromParentDOM.TYPE_USER_NAME:
+        console.log("=====[USER NAME RECEIVED]");
+        console.log(`user name = ${data}`);
+        setName(data);
         break;
-      case "email-input":
-        setEmail(curInputVal);
+      case dataTypeReceiveFromParentDOM.TYPE_USER_EMAIL:
+        console.log("=====[USER EMAIL RECEIVED]");
+        console.log(`user email = ${data}`);
+        setEmail(data);
         break;
       default:
-        break;
+        console.log(
+          "-----[UNRELATED DATA RECEIVED, did not set any variables]"
+        );
     }
   };
 
-  const handleRoleSelected = (e) => {
-    setUserRole(e.target.value);
+  // check if all necessary inputs are received
+  const checkReceivedAllUserInputs = () => {
+    const receivedMeetingNumber = meetingNumber.length > 0 ? true : false;
+    const receivedpassword = password.length > 0 ? true : false;
+    const receivedUserName = name.length > 0 ? true : false;
+    const receivedUserEmail = email.length > 0 ? true : false;
+
+    if (
+      receivedMeetingNumber && // check if received all necessary input
+      receivedpassword &&
+      receivedUserName &&
+      receivedUserEmail
+    ) {
+      return true;
+    }
+    return false;
   };
 
-  const onJoinBtnClicked = () => {
-    getSignature();
-  };
+  /*** listeners ***/
+  useEffect(() => {
+    if (checkReceivedAllUserInputs()) {
+      getSignature();
+    }
+  }, [meetingNumber, password, name, email]);
 
   return (
-    <ZoomMainContainer id="zoom-main-container">
-      <ZoomInnerContainer>
-        <ZoomContentContainer>
-          <ZoomH1Title>Welcome to Aankh Zoom Analytics</ZoomH1Title>
-          <ZoomH3Title>
-            Please fill out the following meeting information and your desired
-            name and email
-          </ZoomH3Title>
-
-          <ZoomInputForm>
-            <ZoomeTextFieldBox>
-              <ZoomTextField
-                id="mn-input"
-                placeholder="meeting number"
-                onChange={updateInputVal}
-              />
-            </ZoomeTextFieldBox>
-            <ZoomeTextFieldBox>
-              <ZoomTextField
-                id="pw-input"
-                placeholder="meeting password"
-                onChange={updateInputVal}
-              />
-            </ZoomeTextFieldBox>
-            <ZoomeTextFieldBox>
-              <ZoomTextField
-                id="name-input"
-                placeholder="your name"
-                onChange={updateInputVal}
-              />
-            </ZoomeTextFieldBox>
-            <ZoomeTextFieldBox>
-              <ZoomTextField
-                id="email-input"
-                placeholder="your email"
-                onChange={updateInputVal}
-              />
-            </ZoomeTextFieldBox>
-            {/* KEY: user role selection. [8/30/2021 - TODO: figure out if it's possible to validate using Zoom API] */}
-            <FormControl className={classes.formControl}>
-              <InputLabel className={classes.inputLabel}>
-                What is your role?
-              </InputLabel>
-              {/* NOTE: for camera selection */}
-
-              <Select
-                className={classes.select}
-                inputProps={{
-                  classes: {
-                    icon: classes.icon,
-                    root: classes.root,
-                  },
-                }}
-                onChange={handleRoleSelected}
-              >
-                <MenuItem
-                  key={userRoleType.STUDENT}
-                  value={userRoleType.STUDENT}
-                >
-                  Student
-                </MenuItem>
-                <MenuItem
-                  key={userRoleType.INSTRUCTOR}
-                  value={userRoleType.INSTRUCTOR}
-                >
-                  Instructor
-                </MenuItem>
-              </Select>
-            </FormControl>
-
-            <ZoomJoinButton onClick={onJoinBtnClicked}>
-              Join Meeting
-            </ZoomJoinButton>
-          </ZoomInputForm>
-        </ZoomContentContainer>
-      </ZoomInnerContainer>
-    </ZoomMainContainer>
+    <div>
+      <h1>Hello from Iframe</h1>
+      <ReceiveDataFromParent varUpdateFunction={updateInputFields} />
+    </div>
   );
 };
 
